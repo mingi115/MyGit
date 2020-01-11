@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MemberMapper">
+	<!-- Beans의 클래스 이름과 객체 이름 명시 -->
+	<resultMap type="fdp.project.spring.model.Member" id="MemberMap">
+		<result property="fdpmember_id" column="fdpmember_id" />
+		<result property="name" column="name" />
+		<result property="user_id" column="user_id" />
+		<result property="user_pw" column="user_pw" />
+		<result property="email" column="email" />
+		<result property="gender" column="gender" />
+		<result property="tel" column="tel" />
+		<result property="addr1" column="addr1" />
+		<result property="addr2" column="addr2" />
+		<result property="addr3" column="addr3" />
+		<result property="addr4" column="addr4" />
+		<result property="reg_date" column="reg_date" />
+		<result property="edit_date" column="edit_date" />
+		<result property="medical_field" column="medical_field" />
+		<result property="member_grade" column="member_grade" />
+	</resultMap>
+
+	<!-- 회원 상세정보 조회  -->
+	<select id="selectItem"
+		parameterType="fdp.project.spring.model.Member"
+		resultMap="MemberMap">
+		SELECT * FROM fdpmember
+		<where>
+			<if test="user_id != null and user_id != ''">
+				user_id = #{user_id}
+			</if>
+			<if test="fdpmember_id != null and fdpmember_id != ''">
+				AND fdpmember_id =#{fdpmember_id}
+			</if>
+			<if test="email != null and email != ''">
+				AND email =#{email}
+			</if>
+		</where>
+	</select>
+
+	<!-- 회원목록 조회  -->
+	<select id="selectList"
+		parameterType="fdp.project.spring.model.Member"
+		resultMap="MemberMap">
+		SELECT * FROM fdpmember
+		
+		<where>
+			<if test="name != null and name != ''">
+				name LIKE concat('%', #{name}, '%')
+			</if>
+			<if test="addr2 != null and addr2 != ''">
+				OR addr2 LIKE concat('%', #{addr2}, '%')
+			</if>
+			<if test="user_id != null and user_id != ''">
+				OR user_id LIKE concat('%', #{user_id}, '%')
+			</if>
+		</where>
+
+		ORDER BY fdpmember_id DESC
+
+		<if test="listCount > 0">
+			LIMIT #{offset}, #{listCount};
+		</if>
+		
+	</select>
+	
+	<!-- 회원정보 추가 -->
+	<insert id="insertItem"
+		parameterType="fdp.project.spring.model.Member"
+		useGeneratedKeys="true"
+		keyProperty="fdpmember_id">
+		INSERT INTO fdpmember (fdpmember_id, name, user_id, user_pw, email, gender, birthdate, tel, addr1, addr2, addr3, addr4, reg_date, edit_date, medical_field, member_grade) 
+		VALUES (#{fdpmember_id}, #{name}, #{user_id}, #{user_pw}, #{email}, #{gender}, #{birthdate}, #{tel}, #{addr1}, #{addr2}, #{addr3}, #{addr4}, #{reg_date}, #{edit_date}, #{medical_field}, #{member_grade})
+	</insert>
+	
+	<!-- 회원정보 수정 -->
+	<update id="updateItem"
+		parameterType="fdp.project.spring.model.Member">
+		UPDATE fdpmember 
+		SET  name=#{name}, user_id=#{user_id}, user_pw=#{user_pw}, email=#{email}, gender=#{gender}, birthdate=#{birthdate}, tel=#{tel}, addr1=#{addr1}, addr2=#{addr2}, addr3=#{addr3}, addr4=#{addr4}, reg_date=#{reg_date}, edit_date=#{edit_date}, 
+		medical_field=#{medical_field}, member_grade=#{member_grade}
+		WHERE fdpmember_id=#{fdpmember_id}
+	</update>
+	
+	<!-- 회원정보 삭제 -->
+	<delete id="deleteItem"
+		parameterType="fdp.project.spring.model.Member">
+		DELETE FROM fdpmember WHERE fdpmember_id=#{fdpmember_id}
+	</delete>
+	
+	<select id="selectCountAll" 
+		parameterType="fdp.project.spring.model.Member"
+        resultType="int">
+        
+        SELECT COUNT(*) FROM fdpmember
+        
+       <where>
+            <if test="name != null and name != ''">
+                name LIKE concat('%', #{name}, '%')
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectOneMember" 
+		parameterType="fdp.project.spring.model.Member"
+		resultMap="MemberMap">
+        
+        SELECT fdpmember_id, name, member_grade  FROM fdpmember WHERE user_id=#{user_id} and user_pw=#{user_pw}
+        
+    </select>
+    
+    
+	
+</mapper>

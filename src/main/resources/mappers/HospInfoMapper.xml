@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HospInfoMapper">
+	<!-- Beans 클래스의 객체이름(id)과 클래스이름(type)을 명시한다. -->
+	<resultMap id="commentMap"
+		type="fdp.project.spring.model.HospInfo">
+		<!-- Beans의 멤버변수(property) 이름과 대상 테이블의 컬럼(column)을 연결한다. -->
+		<result property="hosp_id" column="hosp_id" />
+		<result property="yadmNm" column="yadmNm" /> <!-- 병원이름  -->
+		<result property="XPos" column="XPos" />
+		<result property="YPos" column="YPos" />
+		<result property="addr" column="addr" />
+		<result property="clCdNm" column="clCdNm" />
+		<result property="hospUrl" column="hospUrl" />
+		<result property="telno" column="telno" />
+		<result property="subj" column="subj" />
+		<result property="opentime" column="opentime" />
+		<result property="closetime" column="closetime" />
+	</resultMap>
+
+	<!-- 다중행 조회를 위한 기능 정의 -->
+	<select id="selectList"
+		parameterType="fdp.project.spring.model.HospInfo"
+		resultMap="commentMap">
+		SELECT * FROM hospinfo
+		<where>
+			<if test="opentime != null and opentime != ''">
+				AND addr LIKE concat('%', #{opentime}, '%')
+			</if>
+			<if test="addr != null and addr != ''">
+				AND addr LIKE concat('%', #{addr}, '%')
+			</if>
+			<if test="subj != null and subj != ''">
+				AND subj LIKE concat('%', #{subj}, '%')
+			</if>
+
+		</where>
+
+	</select>
+	
+	<select id="gettime"
+		parameterType="fdp.project.spring.model.HospInfo"
+		resultMap="commentMap">
+		SELECT opentime, closetime FROM hospitalinfo_time
+		<where>
+			<if test="opentime != null and opentime != ''">
+				 gu LIKE concat('%', #{opentime}, '%')
+			</if>
+			<if test="yadmNm != null and yadmNm != ''">
+				AND hospital_name LIKE concat('%', #{yadmNm}, '%')
+			</if>
+			<if test="day_of_week != null and day_of_week != ''">
+				AND day_of_week LIKE concat('%', #{day_of_week}, '%')
+			</if>
+		</where>
+	</select>
+	
+	<!-- 데이터 저장을 위한 기능 정의 -->
+	<insert id="insertItem"
+		parameterType="fdp.project.spring.model.HospInfo"
+		useGeneratedKeys="true" keyProperty="hosp_id">
+		INSERT INTO hospinfo (yadmNm,
+		XPos, YPos, addr, clCdNm, hospUrl, telno, subj)
+		VALUES
+		(#{yadmNm}, #{XPos}, #{YPos}, #{addr},
+		#{clCdNm}, #{hospUrl}, #{telno}, #{subj});
+	</insert>
+</mapper>

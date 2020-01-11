@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CountMapper">
+	<!-- Beans의 클래스 이름과 객체 이름 명시 -->
+	<resultMap type="fdp.project.spring.model.Count" id="CountMap">
+		<result property="addr2" column="addr2" />
+		<result property="birthdate" column="birthdate" />
+		
+	</resultMap>
+
+    <!-- 나이 별 조회 -->
+	<select id="selectCountAge" 
+		parameterType="fdp.project.spring.model.Count" resultMap="CountMap">
+        
+		SELECT birthdate, (YEAR(now())-YEAR(birthdate) + 1) as age, count(*) as ageCount 
+		FROM fdpmember group by age HAVING count(*) > 0 order by age asc;
+		        
+    </select>
+    
+	<!-- 구 별 갯수 조회 -->
+	<select id="selectCountAddr" 
+		parameterType="fdp.project.spring.model.Count" resultMap="CountMap">
+        
+		SELECT addr2, count(*) as addrCount from fdpmember GROUP BY addr2 HAVING count(*) > 0 ORDER BY addrCount DESC;
+		        
+    </select>
+    
+    <!-- 성별 인원 수 조회 -->
+	<select id="selectCountGender" 
+		parameterType="fdp.project.spring.model.Count" resultMap="CountMap">
+        
+		SELECT gender, count(*) as genderCount from fdpmember GROUP BY gender HAVING count(*) > 0 ORDER BY genderCount;
+		
+    </select>
+    
+    <!-- 성별 + 나이 별 조회 -->
+	<select id="selectCountAgeGender" 
+		parameterType="fdp.project.spring.model.Count" resultMap="CountMap">
+        
+		SELECT (YEAR(now())-YEAR(birthdate) + 1) as age, count(*) as ageCount, gender 
+		FROM fdpmember group by age HAVING count(*) > 0 order by age asc;
+		        
+    </select>
+    
+    <!-- 의사 전공별 조회 -->
+	<select id="selectCountDoctor" 
+		parameterType="fdp.project.spring.model.Count" resultMap="CountMap">
+        
+		SELECT medical_field, count(*) as doctorCount FROM fdpmember where medical_field IS NOT NULL group by medical_field having count(*) > 0  ORDER BY doctorCount DESC;       
+    </select>
+	
+</mapper>

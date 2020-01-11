@@ -1,0 +1,13 @@
+.box > div {
+	border: 1px solid #2D6CA2; 
+	background: #5BC0DE; 
+	padding: 3px 5px;
+}
+
+.pink { background: #f0f; height: 200px; }
+.green { background: #0f0; height: 80px; }
+.yellow { background: #ff0; height: 80px; }
+.blue { background: #00f; color: #fff; height: 120px; }
+
+.box > .space { height: 40px; background: #ff0; padding: 0; }
+.height { height: 5px; padding: 0; }

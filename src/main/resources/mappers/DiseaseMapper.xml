@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="DiseaseMapper">
+	<!-- Beans 클래스의 객체이름(id)과 클래스이름(type)을 명시한다. -->
+	<resultMap id="diseaseMap" type="fdp.project.spring.model.Disease_age_gender">
+		<!-- Beans의 멤버변수(property) 이름과 대상 테이블의 컬럼(column)을 연결한다. -->
+		<result property="iddisease_age_gender" column="dis_id" />
+		<result property="dis_year" column="dis_year" />
+		<result property="dis_month" column="dis_month" />
+		<result property="dis_name" column="dis_name" />
+		<result property="dis_age" column="dis_age" />
+		<result property="dis_gender" column="dis_gender" />
+		<result property="dis_cost" column="dis_cost" />
+		<result property="dis_num_patient" column="dis_num_patient" />
+		<result property="sum_cost" column="sum(dis_cost)" />
+		<result property="sum_num_patient" column="sum(dis_num_patient)" />
+	</resultMap>
+
+	<!-- 단일행 조회를 위한 기능 정의 -->
+	<select id="selectItem"
+		parameterType="fdp.project.spring.model.Disease_age_gender" resultMap="diseaseMap">
+		select * from disease_age_gender
+	</select>
+	
+	<!-- 다중행 조회를 위한 기능 정의 -->
+	<select id="year"
+		parameterType="fdp.project.spring.model.Disease_age_gender" resultMap="diseaseMap">
+		select dis_month, sum(dis_cost), sum(dis_num_patient) from disease_age_gender where dis_year=#{dis_year} and dis_name=#{dis_name} group by dis_month
+	</select>
+
+	<select id="age"
+		parameterType="fdp.project.spring.model.Disease_age_gender" resultMap="diseaseMap">
+		select dis_age, sum(dis_cost), sum(dis_num_patient) from disease_age_gender where dis_year=#{dis_year} and dis_name=#{dis_name} group by dis_age
+	</select>
+	
+	<select id="gender"
+		parameterType="fdp.project.spring.model.Disease_age_gender" resultMap="diseaseMap">
+		select dis_gender, sum(dis_cost), sum(dis_num_patient) from disease_age_gender where dis_year=#{dis_year} and dis_name=#{dis_name} group by dis_gender
+	</select>
+	
+	<select id="hit"
+		parameterType="fdp.project.spring.model.Disease_age_gender" resultMap="diseaseMap">
+		select dis_month, dis_name, dis_age, dis_gender, dis_cost, dis_num_patient from disease_age_gender where dis_year=#{dis_year} and dis_name=#{dis_name};
+	</select>
+
+</mapper>

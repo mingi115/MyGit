@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="DocumentMapper">
+
+    <!-- Beans 클래스의 객체이름(id)과 클래스이름(type)을 명시한다. -->
+    <resultMap id="documentMap"
+        type="fdp.project.spring.model.Document">
+        <!-- Beans의 멤버변수(property)이름과 대상 테이블의 컬럼(column)을 연결한다. -->
+        <result property="document_id" column="document_id" />
+        <result property="writer_name" column="writer_name" />
+        <result property="subject" column="subject" />
+        <result property="content" column="content" />
+        <result property="hit" column="hit" />
+        <result property="reg_date" column="reg_date" />
+        <result property="edit_date" column="edit_date" />
+        <result property="fdpmember_id" column="fdpmember_id" />
+        <result property="docA_ok" column="docA_ok" />
+    </resultMap>
+
+    <!-- 단일행 조회를 위한 기능 정의 -->
+    <select id="selectItem"
+        parameterType="fdp.project.spring.model.Document"
+        resultMap="documentMap">
+        SELECT document_id, writer_name, subject, content, hit, reg_date, edit_date, fdpmember_id, docA_ok FROM document WHERE document_id=#{document_id};
+    </select>
+
+    <!-- 다중행 조회를 위한 기능 정의 -->
+    <select id="selectList"
+        parameterType="fdp.project.spring.model.Document"
+        resultMap="documentMap">
+        SELECT document_id, writer_name, subject, content, hit, reg_date, edit_date, docA_ok FROM document
+        
+        <where>
+            <if test="writer_name != null and writer_name != ''">
+                writer_name LIKE concat('%', #{writer_name}, '%')
+            </if>
+            
+            <if test="subject != null and subject != ''">
+                OR subject LIKE concat('%', #{subject}, '%')
+            </if>
+            <!-- <if test="content != null and content != ''">
+                OR content LIKE concat('%', #{content}, '%')
+            </if>
+            <if test="hit != null and hit != ''">
+                OR hit LIKE concat('%', #{hit}, '%')
+            </if>
+            <if test="reg_date != null and reg_date != ''">
+                OR reg_date LIKE concat('%', #{reg_date}, '%')
+            </if>
+            <if test="edit_date != null and edit_date != ''">
+                OR edit_date LIKE concat('%', #{edit_date}, '%')
+            </if>
+            <if test="docA_ok != null and docA_ok != ''">
+                OR docA_ok LIKE concat('%', #{docA_ok}, '%')
+            </if> -->
+        </where>
+        
+        ORDER BY document_id DESC
+        
+        <if test="listCount > 0">
+            LIMIT #{offset}, #{listCount}
+        </if>
+    </select>
+
+    <!-- 데이터 저장을 위한 기능 정의 -->
+    <insert id="insertItem"
+        parameterType="fdp.project.spring.model.Document"
+        useGeneratedKeys="true"
+        keyProperty="document_id">
+        INSERT INTO document (writer_name, subject, content, hit, reg_date, edit_date, fdpmember_id, docA_ok) VALUES (#{writer_name}, #{subject}, #{content}, #{hit}, #{reg_date}, #{edit_date}, #{fdpmember_id}, #{docA_ok});
+    </insert>
+
+    <!-- 데이터 삭제를 위한 기능 정의 -->
+    <delete id="deleteItem"
+        parameterType="fdp.project.spring.model.Document">
+        DELETE FROM document WHERE document_id=#{document_id};
+    </delete>
+
+    <!-- 데이터 갱신을 위한 기능 정의 -->
+    <update id="updateItem"
+        parameterType="fdp.project.spring.model.Document">
+        UPDATE document SET writer_name=#{writer_name}, subject=#{subject}, content=#{content}, hit=#{hit}, reg_date=#{reg_date}, edit_date=#{edit_date}, docA_ok=#{docA_ok} WHERE document_id=#{document_id};
+    </update>
+    
+     <!-- 데이터 갱신을 위한 기능 정의 -->
+    <update id="updateDocA_ok"
+        parameterType="fdp.project.spring.model.Document">
+        UPDATE document SET docA_ok=#{docA_ok} WHERE document_id=#{document_id};
+    </update>
+    <!--
+        조건에 맞는 데이터 수를 집계하여 int 타입으로 반환한다.
+        count, max, min, sum, avg 함수를 사용한 경우 Mapper에서는
+        resultMap이 아닌 resultType으로 반환한다.
+    -->
+    <select id="selectCountAll" 
+            parameterType="fdp.project.spring.model.Document"
+            resultType="int">
+        SELECT COUNT(*) FROM document
+       <where>
+            <if test="writer_name != null and writer_name != ''">
+                writer_name LIKE concat('%', #{writer_name}, '%')
+            </if>
+            
+            <if test="subject != null and subject != ''">
+                OR subject LIKE concat('%', #{subject}, '%')
+            </if>
+            <if test="content != null and content != ''">
+                OR content LIKE concat('%', #{content}, '%')
+            </if>
+            <if test="hit != null and hit != ''">
+                OR hit LIKE concat('%', #{hit}, '%')
+            </if>
+            <if test="reg_date != null and reg_date != ''">
+                OR reg_date LIKE concat('%', #{reg_date}, '%')
+            </if>
+            <if test="edit_date != null and edit_date != ''">
+                OR edit_date LIKE concat('%', #{edit_date}, '%')
+            </if>
+            <if test="fdpmember_id != null and fdpmember_id != ''">
+                OR fdpmember_id LIKE concat('%', #{fdpmember_id}, '%')
+            </if>
+            <if test="docA_ok != null and docA_ok != ''">
+                OR docA_ok LIKE concat('%', #{docA_ok}, '%')
+            </if>
+        </where>
+    </select>
+</mapper>

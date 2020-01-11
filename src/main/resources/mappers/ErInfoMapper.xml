@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ErInfoMapper">
+	<!-- Beans 클래스의 객체이름(id)과 클래스이름(type)을 명시한다. -->
+	<resultMap id="EmRoomMap"
+		type="fdp.project.spring.model.EmRoom">
+		<!-- Beans의 멤버변수(property) 이름과 대상 테이블의 컬럼(column)을 연결한다. -->
+		<result property="er_id" column="er_id" />
+		<result property="dutyName" column="dutyName" /> <!-- 병원이름  -->
+		<result property="tel" column="dutyTel3" /> <!-- 병원이름  -->
+		<result property="hv1" column="hv1" />
+		<result property="hv2" column="hv2" />
+		<result property="hv3" column="hv3" />
+		<result property="hv4" column="hv4" />
+		<result property="hv5" column="hv5" />
+		<result property="hv6" column="hv6" />
+		<result property="hv7" column="hv7" />
+		<result property="hv8" column="hv8" />
+		<result property="hv9" column="hv9" />
+		<result property="hv10" column="hv10" />
+		<result property="hv11" column="hv11" />
+		<result property="hv12" column="hv12" />
+		<result property="hvec" column="hvec" />
+		<result property="hvcc" column="hvcc" />
+		<result property="hvicc" column="hvicc" />
+		<result property="hpid" column="hpid" />
+		<result property="addr" column="addr" />
+		<result property="inserttime" column="inserttime" />
+	</resultMap>
+
+	<!-- 다중행 조회를 위한 기능 정의 -->
+	<select id="selectList"
+		resultMap="EmRoomMap">
+		select dutyName,
+		dutyTel3, hv1, hv2, hv3, hv4, hv5, hv6, hv7, hv8, hv9, hv10, hv11, hv12, hvec, hvcc, hvccc, hvncc, hvicc, hpid, addr
+		FROM erinfo ORDER BY inserttime DESC, dutyName LIMIT 0, 49;
+	</select>
+	
+	<!-- 다중행 조회를 위한 기능 정의 -->
+	<select id="selectEr"
+		parameterType="fdp.project.spring.model.EmRoom"
+		resultMap="EmRoomMap">
+		select hvec, inserttime
+		FROM erinfo 
+		WHERE dutyName = #{dutyName}
+		ORDER BY inserttime ASC;
+	</select>
+	
+	
+	
+	<!-- 데이터 저장을 위한 기능 정의 -->
+	<insert id="insertItem"
+		parameterType="fdp.project.spring.model.EmRoom"
+		useGeneratedKeys="true" keyProperty="er_id">
+		INSERT INTO erinfo (dutyName,
+		dutyTel3, hv1, hv2, hv3, hv4, hv5, hv6, hv7, hv8, hv9, hv10, hv11, hv12, hvec, hvcc, hvccc, hvncc, hvicc, hpid, addr, inserttime)
+		VALUES
+		(#{dutyName}, #{tel}, #{hv1}, #{hv2},
+		#{hv3}, #{hv4}, #{hv5}, #{hv6}, #{hv7}, #{hv8}, #{hv9}, #{hv10}, #{hv11}, #{hv12}, #{hvec}, #{hvcc}, #{hvccc}, #{hvncc}, #{hvicc}, #{hpid}, #{addr}, now());
+	</insert>
+	
+	<!-- 데이터 삭제를 위한 기능 정의 -->
+    <delete id="deleteList">
+        DELETE FROM erinfo  <![CDATA[ where inserttime < DATE_SUB(now(), interval 72 hour); ]]>
+    </delete>
+</mapper>
